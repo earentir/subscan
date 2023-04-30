@@ -1,93 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net"
-	"os"
-	"strings"
-	"sync"
 	"time"
 
-	cli "github.com/jawher/mow.cli"
 	"github.com/miekg/dns"
 	"github.com/tatsushid/go-fastping"
 )
-
-type Output struct {
-	ScanDate  string       `json:"scandate"`
-	Subnet    string       `json:"subnet"`
-	HostIP    string       `json:"hostip"`
-	DNSServer string       `json:"dnsserver"`
-	Results   []ScanResult `json:"results"`
-}
-
-type ScanResult struct {
-	DateTime  string   `json:"datetime"`
-	HostIP    string   `json:"hostip"`
-	TargetIP  string   `json:"targetip"`
-	OpenPorts []int    `json:"openports"`
-	PTRRecord string   `json:"ptrrecord"`
-	ARecords  []string `json:"arecords"`
-	CNAMEs    []string `json:"cnames"`
-	IPMatch   bool     `json:"ipmatch"`
-	TTL       int      `json:"ttl"`
-}
-
-var (
-	appversion string = "1.0.0"
-	outputFile string
-)
-
-func main() {
-	app := cli.App("subscan", "Generate a JSON file with all the responding hosts in a subnet")
-	app.Spec = "SUBNET [-d | --dns] [-p | --ports]"
-	app.Version("v version", appversion)
-
-	subnet := app.StringArg("SUBNET", "", "Subnet to scan, example 192.168.178.0/24")
-	dnsServer := app.StringOpt("d dns", "192.168.178.7:53", "DNS Server to Use, example 192.168.178.7:53")
-	portsToScan := app.IntsOpt("p ports", []int{22, 80, 443}, "Ports to scan")
-
-	app.Action = func() {
-		localIP := getLocalIP()
-
-		currentDate := time.Now().Format("2006-01-02")
-		outputFilename := fmt.Sprintf("%s-%s-scan.json", strings.ReplaceAll(*subnet, "/", "-"), currentDate)
-
-		ips, _ := getIPsFromSubnet(*subnet)
-		results := make([]ScanResult, 0)
-
-		var wg sync.WaitGroup
-		for _, ip := range ips {
-			wg.Add(1)
-			go func(ip string) {
-				defer wg.Done()
-				result := ScanResult{
-					DateTime: time.Now().Format(time.RFC3339),
-					HostIP:   localIP,
-					TargetIP: ip,
-				}
-
-				timeout := 1 * time.Second
-				if isUp, ttl := tcpPing(ip, timeout); isUp {
-					fmt.Printf("TTL for %s: %d ms\n", ip, ttl)
-					result.OpenPorts = scanPorts(ip, []int{80, 443, 22})
-					result.PTRRecord, result.ARecords, result.CNAMEs = getDNSRecords(ip, *dnsServer)
-					result.IPMatch = checkIPMatch(ip, result.ARecords)
-					result.TTL = ttl
-					results = append(results, result)
-				}
-			}(ip)
-		}
-
-	app.Command("scan", "Scan a subnet", cmdScan)
-	app.Command("compare", "Compare Scans", cmdCompare)
-
-	err := app.Run(os.Args)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
 
 func getIPsFromSubnet(subnet string) ([]string, error) {
 	ip, ipnet, err := net.ParseCIDR(subnet)
