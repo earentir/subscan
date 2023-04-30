@@ -99,7 +99,11 @@ func main() {
 
 		fmt.Println("Scan completed, results saved to ", outputFilename)
 	}
-	app.Run(os.Args)
+
+	err := app.Run(os.Args)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func getIPsFromSubnet(subnet string) ([]string, error) {
