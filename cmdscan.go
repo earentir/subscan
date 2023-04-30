@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -67,6 +68,8 @@ func cmdScan(cmd *cli.Cmd) {
 			Results:   results,
 		}
 
+		naturalSort(&output)
+
 		jsonData, _ := json.MarshalIndent(output, "", "  ")
 		err := os.WriteFile(outputFilename, jsonData, 0644)
 		if err != nil {
@@ -76,4 +79,19 @@ func cmdScan(cmd *cli.Cmd) {
 
 		fmt.Println("Scan completed, results saved to ", outputFilename)
 	}
+}
+
+func naturalSort(output *Output) {
+	sort.SliceStable(output.Results, func(i, j int) bool {
+		a := strings.Split(output.Results[i].TargetIP, ".")
+		b := strings.Split(output.Results[j].TargetIP, ".")
+		for index := 0; index < len(a) && index < len(b); index++ {
+			intA, _ := strconv.Atoi(a[index])
+			intB, _ := strconv.Atoi(b[index])
+			if intA != intB {
+				return intA < intB
+			}
+		}
+		return len(a) < len(b)
+	})
 }
