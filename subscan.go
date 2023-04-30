@@ -15,22 +15,22 @@ import (
 )
 
 type Output struct {
-	ScanDate  string       `json:"scanDate"`
+	ScanDate  string       `json:"scandate"`
 	Subnet    string       `json:"subnet"`
-	HostIP    string       `json:"hostIP"`
-	DNSServer string       `json:"dnsServer"`
+	HostIP    string       `json:"hostip"`
+	DNSServer string       `json:"dnsserver"`
 	Results   []ScanResult `json:"results"`
 }
 
 type ScanResult struct {
-	DateTime  string   `json:"dateTime"`
-	HostIP    string   `json:"hostIP"`
-	TargetIP  string   `json:"targetIP"`
-	OpenPorts []int    `json:"openPorts"`
-	PTRRecord string   `json:"ptrRecord"`
-	ARecords  []string `json:"aRecords"`
+	DateTime  string   `json:"datetime"`
+	HostIP    string   `json:"hostip"`
+	TargetIP  string   `json:"targetip"`
+	OpenPorts []int    `json:"openports"`
+	PTRRecord string   `json:"ptrrecord"`
+	ARecords  []string `json:"arecords"`
 	CNAMEs    []string `json:"cnames"`
-	IPMatch   bool     `json:"ipMatch"`
+	IPMatch   bool     `json:"ipmatch"`
 	TTL       int      `json:"ttl"`
 }
 
