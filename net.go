@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/miekg/dns"
@@ -60,9 +62,22 @@ func tcpPing(ip string, timeout time.Duration) (bool, int) {
 	return isUp, ttl
 }
 
-func scanPorts(ip string, ports []int) []int {
+func parseCSVToInt(csvInput string) []int {
+	var intSlice []int
+	fields := strings.Split(csvInput, ",")
+	for _, field := range fields {
+		intField, err := strconv.Atoi(strings.TrimSpace(field))
+		if err == nil {
+			intSlice = append(intSlice, intField)
+		}
+	}
+	return intSlice
+}
+
+func scanPorts(ip string, ports []string) []int {
+	intPorts := parseCSVToInt(ports[0])
 	var openPorts []int
-	for _, port := range ports {
+	for _, port := range intPorts {
 		timeout := time.Second
 		conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", ip, port), timeout)
 		if err == nil {

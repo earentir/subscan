@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -13,15 +14,18 @@ import (
 
 func cmdScan(cmd *cli.Cmd) {
 
-	cmd.Spec = "SUBNET [-d | --dns] [-p | --ports]"
+	cmd.Spec = "SUBNET [--dns] [--ports]"
 
 	var (
 		subnet      = cmd.StringArg("SUBNET", "", "Subnet to scan, example")
-		dnsServer   = cmd.StringOpt("d dns", "", "DNS Server to Use, example")
-		portsToScan = cmd.IntsOpt("p ports", []int{22, 80, 443}, "Ports to scan")
+		dnsServer   = cmd.StringOpt("dns", "", "DNS Server to Use, example")
+		portsToScan = cmd.StringsOpt("ports", []string{"22", "80", "443"}, "Ports to scan")
 	)
 
 	cmd.Action = func() {
+		// fmt.Println("portsToScan:", *portsToScan)
+		// os.Exit(1)
+
 		localIP := getLocalIP()
 
 		currentDate := time.Now().Format("2006-01-02")
