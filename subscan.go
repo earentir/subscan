@@ -80,25 +80,7 @@ func main() {
 			}(ip)
 		}
 
-		wg.Wait()
-
-		output := Output{
-			ScanDate:  time.Now().Format(time.RFC3339),
-			Subnet:    *subnet,
-			HostIP:    localIP,
-			DNSServer: *dnsServer,
-			Results:   results,
-		}
-
-		jsonData, _ := json.MarshalIndent(output, "", "  ")
-		err := os.WriteFile(outputFilename, jsonData, 0644)
-		if err != nil {
-			fmt.Println("Error writing JSON file:", err)
-			return
-		}
-
-		fmt.Println("Scan completed, results saved to ", outputFilename)
-	}
+	app.Command("compare", "Compare Scans", cmdCompare)
 
 	err := app.Run(os.Args)
 	if err != nil {
