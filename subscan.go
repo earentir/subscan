@@ -81,6 +81,7 @@ func main() {
 		}
 
 	app.Command("scan", "Scan a subnet", cmdScan)
+	app.Command("list", "List Saved Scans", cmdList)
 	app.Command("compare", "Compare Scans", cmdCompare)
 
 	err := app.Run(os.Args)
