@@ -6,7 +6,7 @@ Scan subnets and create a json with the results.
 ### Scan 192.168.178.0/24 and use the 192.168.178.7:53 DNS server to get dns records (PTR, A, CNAME etc)
 ```
 ./subscan scan 192.168.178.0/24 --dns 192.168.178.7:53
----
+
 TTL for 192.168.178.180: 68 ms
 TTL for 192.168.178.232: 63 ms
 TTL for 192.168.178.7: 1 ms
@@ -52,7 +52,7 @@ Scan completed, results saved to  192.168.178.0-24-2023-04-30-scan.json
 ### List all scans
 ```
 ./subscan list
----
+
 Found 4 scans
 
 IP-Subnet: 192.168.178.0-24
@@ -73,9 +73,23 @@ HostIP: 172.29.36.128, DNSServer: 192.168.178.7:53
 ### Compare scans
 ```
 ./subscan compare 192.168.178.0-24-2023-04-30-scan.json 192.168.178.0-24-2023-04-29-scan.json
----
+
 TargetIP 192.168.178.26 doesn't exist in file 192.168.178.0-24-2023-04-30-scan.json
 Open ports for TargetIP 192.168.178.5 differ in file 192.168.178.0-24-2023-04-30-scan.json and 192.168.178.0-24-2023-04-29-scan.json
 192.168.178.0-24-2023-04-30-scan.json: [22 443]
 192.168.178.0-24-2023-04-29-scan.json: [22 80 443]
+```
+
+### View Target IP
+```
+./subscan view 192.168.178.0-24-2023-04-30-scan.json 192.168.178.1
+
+DateTime: 2023-04-30T23:04:13+03:00
+HostIP: 172.29.36.128
+OpenPorts: [443 53]
+PTRRecord: gw.ear.pm.
+ARecords: [192.168.178.1]
+CNAMEs: []
+IPMatch: true
+TTL: 0
 ```
