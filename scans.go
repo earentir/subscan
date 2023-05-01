@@ -27,6 +27,10 @@ func printGroupedFiles(groupedFiles map[string][]string, dir string) {
 			} else {
 				fmt.Printf("HostIP: %s, DNSServer: %s\n", hostIPs[i], dnsServers[i])
 			}
+
+			if len(scanDates) > 1 {
+				fmt.Println()
+			}
 		}
 		fmt.Println()
 	}
