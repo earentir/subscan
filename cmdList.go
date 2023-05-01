@@ -19,12 +19,9 @@ func cmdList(cmd *cli.Cmd) {
 			return
 		}
 
-		fmt.Println("Found", len(matchedFiles), "scans")
-		fmt.Println()
+		fmt.Printf("Found %d scans\n\n", len(matchedFiles))
 
 		groupedFiles := groupFilesByIPSubnet(matchedFiles)
-
 		printGroupedFiles(groupedFiles, *dir)
 	}
-
 }
