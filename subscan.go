@@ -23,6 +23,7 @@ func main() {
 	app.Command("scan", "Scan a subnet", cmdScan)
 	app.Command("list", "List Saved Scans", cmdList)
 	app.Command("compare", "Compare Scans", cmdCompare)
+	app.Command("view", "View Details for a host", cmdView)
 
 	err := app.Run(os.Args)
 	if err != nil {
