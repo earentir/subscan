@@ -2,5 +2,4 @@
 *.json
 bin/subscan
 .gitignore
-bin/subscan.exe
-bin/subscan_darwin*
+bin/*
